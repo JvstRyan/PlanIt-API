@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PlanIt.API.Data;
+using PlanIt.API.Mappings;
+using PlanIt.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<PlanItDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("PlanItConnectionString")));
+
+builder.Services.AddScoped<ISurveyRepository, SQLSurveyRepository>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 var app = builder.Build();
 
