@@ -7,5 +7,7 @@ namespace PlanIt.API.Repositories
 
         Task<List<Dates>> GetAllActiveAsync();
 
+        Task<List<Dates>> CreateAsync(List<Dates> dates);
+
     }
 }

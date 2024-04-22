@@ -10,3 +10,15 @@ namespace PlanIt.API.Models.Domain
         public required string Status { get; set; }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+

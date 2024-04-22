@@ -11,6 +11,34 @@ namespace PlanIt.API.Repositories
         {
             _dbContext = dbContext;
         }
+
+
+        public async Task SetAllDatesToUnactiveAsync()
+        {
+            var allDates = await _dbContext.Dates.ToListAsync();
+
+            foreach (var date in allDates)
+            {
+                date.Status = "unactive";
+            }
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<Dates>> CreateAsync(List<Dates> newDates)
+        {
+            await SetAllDatesToUnactiveAsync();
+
+            foreach (var date in newDates)
+            {
+                _dbContext.Dates.Add(date);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return newDates;
+        }
+
         public async Task<List<Dates>> GetAllActiveAsync()
         {
             return await _dbContext.Dates

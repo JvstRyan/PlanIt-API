@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlanIt.API.Data;
 
@@ -11,9 +12,11 @@ using PlanIt.API.Data;
 namespace PlanIt.API.Migrations
 {
     [DbContext(typeof(PlanItDbContext))]
-    partial class PlanItDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240412185600_user updates")]
+    partial class userupdates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -252,12 +255,10 @@ namespace PlanIt.API.Migrations
                     b.Property<Guid>("DateId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ResponseId")
+                    b.Property<Guid?>("ResponseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DateId");
 
                     b.HasIndex("ResponseId");
 
@@ -352,21 +353,9 @@ namespace PlanIt.API.Migrations
 
             modelBuilder.Entity("PlanIt.API.Models.Domain.DateAnswer", b =>
                 {
-                    b.HasOne("PlanIt.API.Models.Domain.Dates", "Date")
-                        .WithMany()
-                        .HasForeignKey("DateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PlanIt.API.Models.Domain.Response", "Response")
+                    b.HasOne("PlanIt.API.Models.Domain.Response", null)
                         .WithMany("DateAnswers")
-                        .HasForeignKey("ResponseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Date");
-
-                    b.Navigation("Response");
+                        .HasForeignKey("ResponseId");
                 });
 
             modelBuilder.Entity("PlanIt.API.Models.Domain.Response", b =>
