@@ -11,7 +11,7 @@ namespace PlanIt.API.Models.Domain
 
         //Navigation properties
 
-        public IdentityUser User { get; set; }
+        public ApplicationUser User { get; set; }
         public List<DateAnswer> DateAnswers { get; set; }
 
 

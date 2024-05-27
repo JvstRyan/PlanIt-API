@@ -10,5 +10,11 @@ namespace PlanIt.API.Repositories
         Task<Response> CreateResponse(Response response);
 
         Task<List<ActiveDateDto>> GetAllResponses();
+
+        Task<bool> HasUserAnswered(string userId);
+
+        Task<bool> DeleteUser(string userId);
+
+        
     }
 }

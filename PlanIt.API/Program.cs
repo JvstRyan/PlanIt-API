@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PlanIt.API.Data;
 using PlanIt.API.Mappings;
+using PlanIt.API.Models.Domain;
 using PlanIt.API.Repositories;
 using System.Text;
 
@@ -25,9 +26,9 @@ builder.Services.AddScoped<IResponseRepository, SQLResponseRepository>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
-builder.Services.AddIdentityCore<IdentityUser>()
+builder.Services.AddIdentityCore<ApplicationUser>()
     .AddRoles<IdentityRole>()
-    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("PlanIt")
+    .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("PlanIt")
     .AddEntityFrameworkStores<PlanItDbContext>()
     .AddDefaultTokenProviders();
 
@@ -59,12 +60,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowMyOrigin",
-    builder => builder.WithOrigins("http://localhost:3000")
+    builder => builder.WithOrigins("https://availi.vercel.app")
                       .AllowAnyHeader()
                       .AllowAnyMethod()
                       .AllowCredentials());
                     
 });
+
 
 var app = builder.Build();
 
@@ -78,6 +80,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowMyOrigin");
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

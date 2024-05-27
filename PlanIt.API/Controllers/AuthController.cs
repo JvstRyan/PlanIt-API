@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PlanIt.API.Models.Domain;
 using PlanIt.API.Models.DTO;
 using PlanIt.API.Repositories;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,12 +14,12 @@ namespace PlanIt.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ITokenRepository _tokenRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
 
-        public AuthController(UserManager<IdentityUser> userManager, ITokenRepository tokenRepository, IMapper mapper, IConfiguration configuration )
+        public AuthController(UserManager<ApplicationUser> userManager, ITokenRepository tokenRepository, IMapper mapper, IConfiguration configuration )
         {
             _userManager = userManager;
             _tokenRepository = tokenRepository;
@@ -34,7 +35,7 @@ namespace PlanIt.API.Controllers
 
         public async Task<IActionResult> Register([FromBody] RequestRegisterDto requestRegisterDto)
         {
-            var identityUser = new IdentityUser
+            var identityUser = new ApplicationUser
             {
                 UserName = requestRegisterDto.Name,
                 Email = requestRegisterDto.Email
@@ -55,6 +56,7 @@ namespace PlanIt.API.Controllers
                     }
                 
             }
+
             return BadRequest();
 
         }
@@ -86,12 +88,12 @@ namespace PlanIt.API.Controllers
                         var cookieOptions = new CookieOptions
                         {
                             HttpOnly = true,
-                            Secure = false,
-                            SameSite = SameSiteMode.Lax,
+                            Secure = true,
+                            SameSite = SameSiteMode.None,
                             Expires = DateTime.UtcNow.AddDays(7)
                         };
 
-                        Response.Cookies.Append("jwtToken", jwtToken, cookieOptions);
+                        Response.Cookies.Append("__jwtToken", jwtToken, cookieOptions);
 
                         var response = new LoginResponseDto
                         {
@@ -119,7 +121,7 @@ namespace PlanIt.API.Controllers
         
         public IActionResult Authorize()
         {
-            var jwtToken = Request.Cookies["jwtToken"];
+            var jwtToken = Request.Cookies["__jwtToken"];
 
             if (string.IsNullOrEmpty(jwtToken))
             {
@@ -155,12 +157,12 @@ namespace PlanIt.API.Controllers
 
         public IActionResult Logout()
         {
-            var jwtToken = Request.Cookies["jwtToken"];
+            var jwtToken = Request.Cookies["__jwtToken"];
             if (string.IsNullOrEmpty(jwtToken))
             {
                 return BadRequest(new { message = "No jwtToken cookie found" });
             }
-            Response.Cookies.Delete("jwtToken");
+            Response.Cookies.Delete("__jwtToken");
             return Ok(new { message = "logged out" });
         }
 

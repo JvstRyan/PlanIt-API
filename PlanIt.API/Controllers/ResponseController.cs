@@ -12,11 +12,11 @@ namespace PlanIt.API.Controllers
     [ApiController]
     public class ResponseController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IResponseRepository _responseRepository;
         private readonly IMapper _mapper;
 
-        public ResponseController(UserManager<IdentityUser> userManager, IResponseRepository responseRepository, IMapper mapper)
+        public ResponseController(UserManager<ApplicationUser> userManager, IResponseRepository responseRepository, IMapper mapper)
         {
             _userManager = userManager;
             _responseRepository = responseRepository;
@@ -34,6 +34,19 @@ namespace PlanIt.API.Controllers
             return Ok(results);
         }
 
+        [HttpGet("users")]
+
+        public async Task<IActionResult> GetActiveUsers()
+        {
+            var responses = await _responseRepository.GetAllResponses();
+
+            var users = responses.SelectMany(r => r.AvailableUsers)
+                .GroupBy(u => u.UserId)
+                .Select(g => g.First())
+                .ToList();
+
+            return Ok(users);
+        }
 
         [HttpPost]
 
@@ -56,6 +69,14 @@ namespace PlanIt.API.Controllers
            
         }
 
+        [HttpGet("hasUserAnswered")]
+
+        public async Task<IActionResult> HasUserAnswered(string userId)
+        {
+            bool hasAnswered = await _responseRepository.HasUserAnswered(userId);
+
+            return Ok(hasAnswered);
+        }
 
     }
 }

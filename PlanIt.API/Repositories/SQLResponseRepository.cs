@@ -23,6 +23,24 @@ namespace PlanIt.API.Repositories
 
         }
 
+        public async Task<bool> DeleteUser(string userId)
+        {
+            var user = await _dbContext.Users
+                .Include(u => u.Responses)
+                .ThenInclude(r => r.DateAnswers)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<List<ActiveDateDto>> GetAllResponses()
         {
             var responses = await _dbContext.Responses
@@ -50,6 +68,20 @@ namespace PlanIt.API.Repositories
 
 
             return activeDates;  
+        }
+
+        public async Task<bool> HasUserAnswered(string userId)
+        {
+            var hasAnswered = await _dbContext.DateAnswers
+                 .Include(da => da.Date)
+                 .Include(da => da.Response)
+                 .AnyAsync(da => da.Response.UserId == userId && da.Date.Status == "active");
+
+            if (hasAnswered == null)
+                return false;
+            
+            
+            return hasAnswered;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Data;
 
 namespace PlanIt.API.Data
 {
-    public class PlanItDbContext : IdentityDbContext<IdentityUser>
+    public class PlanItDbContext : IdentityDbContext<ApplicationUser>
     {
 
         public PlanItDbContext(DbContextOptions<PlanItDbContext> dbContextOptions) : base(dbContextOptions)
@@ -18,6 +18,7 @@ namespace PlanIt.API.Data
         public DbSet<Dates> Dates { get; set; }
         public DbSet<Response> Responses { get; set; }
         public DbSet<DateAnswer> DateAnswers { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

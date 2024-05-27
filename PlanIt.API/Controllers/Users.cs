@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PlanIt.API.Models.Domain;
 using PlanIt.API.Models.DTO;
 using PlanIt.API.Repositories;
 
@@ -12,13 +14,15 @@ namespace PlanIt.API.Controllers
     [ApiController]
     public class Users : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly IResponseRepository _responseRepository;
 
-        public Users(UserManager<IdentityUser> userManager, IMapper mapper)
+        public Users(UserManager<ApplicationUser> userManager, IMapper mapper, IResponseRepository responseRepository)
         {
             _userManager = userManager;
             _mapper = mapper;
+            _responseRepository = responseRepository;
         }
 
         //Get Users
@@ -122,18 +126,16 @@ namespace PlanIt.API.Controllers
 
         public async Task<IActionResult> DeleteUser([FromRoute] string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-
-            if (user == null)
+            if (string.IsNullOrEmpty(id))
             {
-                return NotFound("User not found");
+                return BadRequest("Id cannot be null or empty");
             }
 
-            var result = await _userManager.DeleteAsync(user);
+            var result = await _responseRepository.DeleteUser(id);
 
-            if (!result.Succeeded)
+            if (!result)
             {
-                return BadRequest(result.Errors);
+                return NotFound("User not found");
             }
 
 

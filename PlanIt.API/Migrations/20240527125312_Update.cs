@@ -6,22 +6,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PlanIt.API.Migrations
 {
     /// <inheritdoc />
-    public partial class FixDatesId : Migration
+    public partial class Update : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_DateAnswers_Dates_DatesId",
+                name: "FK_DateAnswers_Responses_ResponseId",
                 table: "DateAnswers");
 
-            migrationBuilder.DropIndex(
-                name: "IX_DateAnswers_DatesId",
-                table: "DateAnswers");
-
-            migrationBuilder.DropColumn(
-                name: "DatesId",
-                table: "DateAnswers");
+            migrationBuilder.AlterColumn<Guid>(
+                name: "ResponseId",
+                table: "DateAnswers",
+                type: "uniqueidentifier",
+                nullable: false,
+                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"),
+                oldClrType: typeof(Guid),
+                oldType: "uniqueidentifier",
+                oldNullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_DateAnswers_DateId",
@@ -35,6 +37,14 @@ namespace PlanIt.API.Migrations
                 principalTable: "Dates",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_DateAnswers_Responses_ResponseId",
+                table: "DateAnswers",
+                column: "ResponseId",
+                principalTable: "Responses",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
@@ -44,29 +54,28 @@ namespace PlanIt.API.Migrations
                 name: "FK_DateAnswers_Dates_DateId",
                 table: "DateAnswers");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_DateAnswers_Responses_ResponseId",
+                table: "DateAnswers");
+
             migrationBuilder.DropIndex(
                 name: "IX_DateAnswers_DateId",
                 table: "DateAnswers");
 
-            migrationBuilder.AddColumn<Guid>(
-                name: "DatesId",
+            migrationBuilder.AlterColumn<Guid>(
+                name: "ResponseId",
                 table: "DateAnswers",
                 type: "uniqueidentifier",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DateAnswers_DatesId",
-                table: "DateAnswers",
-                column: "DatesId");
+                nullable: true,
+                oldClrType: typeof(Guid),
+                oldType: "uniqueidentifier");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_DateAnswers_Dates_DatesId",
+                name: "FK_DateAnswers_Responses_ResponseId",
                 table: "DateAnswers",
-                column: "DatesId",
-                principalTable: "Dates",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                column: "ResponseId",
+                principalTable: "Responses",
+                principalColumn: "Id");
         }
     }
 }
