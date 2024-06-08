@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PlanIt.API.Models.Domain;
 using PlanIt.API.Models.DTO;
-using PlanIt.API.Repositories;
+using PlanIt.API.Repositories.Interfaces;
 
 namespace PlanIt.API.Controllers
 {

@@ -6,6 +6,9 @@ using PlanIt.API.Data;
 using PlanIt.API.Mappings;
 using PlanIt.API.Models.Domain;
 using PlanIt.API.Repositories;
+using PlanIt.API.Repositories.Interfaces;
+using PlanIt.API.Services;
+using PlanIt.API.Services.Interfaces;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +26,7 @@ builder.Services.AddDbContext<PlanItDbContext>(options =>
 builder.Services.AddScoped<ISurveyRepository, SQLSurveyRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IResponseRepository, SQLResponseRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
@@ -60,11 +64,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowMyOrigin",
-    builder => builder.WithOrigins("https://availi.vercel.app")
+    builder => builder.WithOrigins("https://availi.vercel.app/")
                       .AllowAnyHeader()
                       .AllowAnyMethod()
-                      .AllowCredentials());
-                    
+                      .AllowCredentials()); 
 });
 
 

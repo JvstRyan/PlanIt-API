@@ -1,6 +1,6 @@
 ﻿using PlanIt.API.Models.Domain;
 
-namespace PlanIt.API.Repositories
+namespace PlanIt.API.Repositories.Interfaces
 {
     public interface ISurveyRepository
     {
